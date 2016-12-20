@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import se.plushogskolan.restcaseservice.exception.BadRequestExceptionMapper;
 import se.plushogskolan.restcaseservice.exception.ConflictExceptionMapper;
 import se.plushogskolan.restcaseservice.exception.NotFoundExceptionMapper;
+import se.plushogskolan.restcaseservice.exception.UnathorizedExceptionMapper;
 import se.plushogskolan.restcaseservice.filter.RequestFilter;
 import se.plushogskolan.restcaseservice.resource.IssueResource;
 import se.plushogskolan.restcaseservice.resource.TeamResource;
@@ -23,6 +24,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(ConflictExceptionMapper.class);
 		register(NotFoundExceptionMapper.class);
 		register(BadRequestExceptionMapper.class);
+		register(UnathorizedExceptionMapper.class);
 		register(RequestFilter.class);
 	}
 

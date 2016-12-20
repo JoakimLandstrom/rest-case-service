@@ -4,8 +4,9 @@ import java.io.IOException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+
+import se.plushogskolan.restcaseservice.exception.UnathorizedException;
 
 @Provider
 public final class RequestFilter implements ContainerRequestFilter {
@@ -17,8 +18,8 @@ public final class RequestFilter implements ContainerRequestFilter {
 		
 		String authHeader = requestContext.getHeaderString("Authorization");
 		
-		if(!authHeader.equalsIgnoreCase(AUTH_TOKEN)){			
-			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+		if(authHeader == null || !authHeader.equalsIgnoreCase(AUTH_TOKEN)){			
+			throw new UnathorizedException("Unathorized");
 		}
 		
 	}
