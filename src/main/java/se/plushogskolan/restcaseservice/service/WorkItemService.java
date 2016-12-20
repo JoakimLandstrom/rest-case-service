@@ -63,10 +63,14 @@ public class WorkItemService {
 	}
 
 	public WorkItem addWorkItemToUser(Long workItemId, Long userId) {
+		
 		try {
+			service.getUser(userId);
 			return service.addWorkItemToUser(workItemId, userId);
 		} catch(StatusConflictException | NoSpaceException e) {
 			throw new ConflictException(e.getMessage());
+		}catch(NotPersistedException e){
+			throw new NotFoundException(e.getMessage());
 		} catch(InternalErrorException e) {
 			throw new WebInternalErrorException(e.getMessage());
 		}

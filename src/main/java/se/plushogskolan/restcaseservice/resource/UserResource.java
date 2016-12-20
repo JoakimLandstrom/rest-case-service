@@ -3,6 +3,7 @@ package se.plushogskolan.restcaseservice.resource;
 import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -11,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -56,19 +58,23 @@ public final class UserResource {
 
 	@PUT
 	@Path("{id}")
-	public Response updateUserFirstNameLastNameUsername(@PathParam("id") Long id, DTOUser dtoUser) {
+	public Response updateUserFirstNameLastNameUsername(@PathParam("id") Long id, DTOUser dtoUser,
+			@QueryParam("workItemId") Long workItemId) {
 
-		if (dtoUser.getUsername() != null)
+		if (dtoUser != null && dtoUser.getUsername() != null)
 			userService.updateUserUsername(id, dtoUser.getUsername());
 
-		if (dtoUser.getFirstName() != null)
+		if (dtoUser != null && dtoUser.getFirstName() != null)
 			userService.updateUserFirstName(id, dtoUser.getFirstName());
 
-		if (dtoUser.getLastName() != null)
+		if (dtoUser != null && dtoUser.getLastName() != null)
 			userService.updateUserLastName(id, dtoUser.getLastName());
 
-		if (dtoUser.getIsActive() != null)
+		if (dtoUser != null && dtoUser.getIsActive() != null)
 			userService.updateUserIsActive(id, dtoUser.getIsActive());
+
+		if (workItemId != null)
+			workItemService.addWorkItemToUser(workItemId, id);
 
 		return Response.status(Status.NO_CONTENT).build();
 	}
