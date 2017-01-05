@@ -49,7 +49,7 @@ public final class UserResource {
 	public Response addUser(DTOUser dtoUser) throws ConflictException {
 
 		User savedUser = userService.saveUser(dtoUser);
-
+		
 		URI location = uriInfo.getAbsolutePathBuilder().path(savedUser.getId().toString()).build();
 
 		return Response.created(location).build();

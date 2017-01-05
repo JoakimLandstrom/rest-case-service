@@ -1,15 +1,15 @@
 package se.plushogskolan.restcaseservice;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(SpringRunner.class)
+import se.plushogskolan.restcaseservice.resources.UserResource;
+import se.plushogskolan.restcaseservice.resources.UserResourceMock;
+
+@RunWith(Suite.class)
+@SuiteClasses({UserResource.class, UserResourceMock.class})
 public class RestCaseServiceApplicationTests {
 
-	@Test
-	public void contextLoads() {
-	}
 
 }

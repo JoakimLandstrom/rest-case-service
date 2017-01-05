@@ -12,6 +12,7 @@ import se.plushogskolan.casemanagement.exception.AlreadyPersistedException;
 import se.plushogskolan.casemanagement.exception.InternalErrorException;
 import se.plushogskolan.casemanagement.exception.NoSpaceException;
 import se.plushogskolan.casemanagement.exception.NotPersistedException;
+import se.plushogskolan.casemanagement.exception.IllegalArgumentException;
 import se.plushogskolan.casemanagement.model.User;
 import se.plushogskolan.casemanagement.service.CaseService;
 import se.plushogskolan.restcaseservice.exception.ConflictException;
