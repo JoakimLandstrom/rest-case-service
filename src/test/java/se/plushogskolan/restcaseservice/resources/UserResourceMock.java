@@ -1,21 +1,25 @@
 package se.plushogskolan.restcaseservice.resources;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.CONFLICT;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
-import static javax.ws.rs.core.Response.Status.CONFLICT;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static se.plushogskolan.restcaseservice.model.DTOUser.toEntity;
 import static se.plushogskolan.restcaseservice.model.DTOWorkItem.toEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -32,6 +36,8 @@ import se.plushogskolan.casemanagement.exception.AlreadyPersistedException;
 import se.plushogskolan.casemanagement.exception.IllegalArgumentException;
 import se.plushogskolan.casemanagement.exception.InternalErrorException;
 import se.plushogskolan.casemanagement.exception.NotPersistedException;
+import se.plushogskolan.casemanagement.model.User;
+import se.plushogskolan.casemanagement.model.WorkItem;
 import se.plushogskolan.casemanagement.model.WorkItem.Status;
 import se.plushogskolan.casemanagement.service.CaseService;
 import se.plushogskolan.restcaseservice.model.DTOUser;
@@ -153,7 +159,7 @@ public class UserResourceMock {
 	}
 
 	@Test
-	public void updateUsernameThrowsBadRequest() {
+	public void updateUserUsernameThrowsBadRequest() {
 		
 		DTOUser user = DTOUser.builder().build("joakimlandstrom");
 
@@ -177,6 +183,37 @@ public class UserResourceMock {
 
 		assertEquals(CONFLICT, response.getStatusInfo());
 	}
+	
+	@Test
+	public void updateUserIsActiveThrowsNotFound(){
+		
+		DTOUser user = DTOUser.builder().setIsActive(false).build(null);
+
+		doThrow(new NotPersistedException("")).when(caseService).inactivateUser(1l);
+
+		Response response = webTarget.path("1").request().header(header, token)
+				.put(Entity.entity(user, MediaType.APPLICATION_JSON));
+
+		assertEquals(NOT_FOUND, response.getStatusInfo());
+	}
+	
+	@Test
+	public void searchUsers(){
+		List<User> users = new ArrayList<User>();
+		DTOUser user = DTOUser.builder().setIsActive(false).build("joakimlandstrom");
+		users.add(toEntity(user));
+		
+		when(caseService.searchUsersByFirstNameLastNameUsername("", "",	"", 0, 10)).thenReturn(users);
+		
+		Response response = webTarget.request().header(header, token).get();
+		
+		List<DTOUser> dtoUsers = response.readEntity(new GenericType<List<DTOUser>>(){});
+		
+		assertEquals(OK, response.getStatusInfo());
+		assertEquals(user, dtoUsers.get(0));
+	}
+	
+	
 
 	@Test
 	public void getUser() {
@@ -212,6 +249,25 @@ public class UserResourceMock {
 		Response response = client.target(targetUrl).path("1").request().header(header, token).get();
 
 		assertEquals(INTERNAL_SERVER_ERROR, response.getStatusInfo());
+	}
+	
+	@Test
+	public void getWorkItemsByUserId(){
+		
+		DTOWorkItem workItem = DTOWorkItem.builder("temp", Status.UNSTARTED).build();
+		
+		List<WorkItem> workItems = new ArrayList<>();
+		
+		workItems.add(toEntity(workItem));
+		
+		when(caseService.getWorkItemsByUserId(1l, 0, 5)).thenReturn(workItems);
+		
+		Response response = client.target(targetUrl).path("1").path("workitems").request().header(header, token).get();
+		
+		List<WorkItem> dtoWorkItems = response.readEntity(new GenericType<List<WorkItem>>(){});
+		
+		assertEquals(OK, response.getStatusInfo());
+		assertEquals(toEntity(workItem),dtoWorkItems.get(0));
 	}
 
 }

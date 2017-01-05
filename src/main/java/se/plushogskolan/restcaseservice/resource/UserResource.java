@@ -97,7 +97,7 @@ public final class UserResource {
 	@GET
 	@Path("{id}/workitems")
 	public Response getWorkItemsByUserId(@PathParam("id") Long id, @BeanParam PageRequestBean pageRequest) {
-
+		
 		List<WorkItem> list = workItemService.getWorkItemsByUserId(id, pageRequest.getPage(), pageRequest.getSize());
 
 		return Response.ok(list).build();
