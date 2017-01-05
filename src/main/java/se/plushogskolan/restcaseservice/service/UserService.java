@@ -89,7 +89,7 @@ public class UserService {
 	}
 
 	public DTOUser getUser(Long userId) {
-
+		
 		try {
 			return toDTO(service.getUser(userId));
 		} catch (NotPersistedException e1) {

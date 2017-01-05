@@ -56,10 +56,10 @@ public final class DTOUser extends AbstractDTO {
 			return false;
 		}
 
-		if (other instanceof User) {
-			User otherUser = (User) other;
+		if (other instanceof DTOUser) {
+			DTOUser otherUser = (DTOUser) other;
 			return firstName.equals(otherUser.getFirstName()) && lastName.equals(otherUser.getLastName())
-					&& username.equals(otherUser.getUsername()) && isActive == otherUser.isActive();
+					&& username.equals(otherUser.getUsername()) && isActive == otherUser.getIsActive();
 		}
 		return false;
 	}
