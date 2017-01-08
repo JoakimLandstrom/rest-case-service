@@ -125,6 +125,42 @@ public class WorkItemResourceMock {
 		assertEquals(NOT_FOUND, response.getStatusInfo());
 	}
 	
+	@Test
+	public void deleteWorkItem(){
+		
+		Response response = webTarget.path("1").request().header(header, token).delete();
+		
+		assertEquals(NO_CONTENT, response.getStatusInfo());
+	}
 	
+	@Test
+	public void deleteWorkItemThrowsNotFound(){
+		
+		doThrow(new NotPersistedException("")).when(caseService).deleteWorkItem(1l);
+		
+		Response response = webTarget.path("1").request().header(header, token).delete();
+		
+		assertEquals(NOT_FOUND, response.getStatusInfo());
+	}
+	
+	@Test
+	public void getWorkItem(){
+		
+		DTOWorkItem workItem = DTOWorkItem.builder("tempdescription", Status.DONE).build();
+		
+		when(caseService.getWorkItemById(1l)).thenReturn(toEntity(workItem));
+		
+		Response response = webTarget.path("1").request().header(header, token).get();
+		
+		DTOWorkItem returnedWorkItem = response.readEntity(DTOWorkItem.class);
+		
+		assertEquals(OK, response.getStatusInfo());
+		assertEquals(workItem,returnedWorkItem);		
+	}
+	
+	@Test
+	public void getWorkItemsByStatus(){
+		
+	}
 
 }
