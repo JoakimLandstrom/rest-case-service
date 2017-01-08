@@ -18,7 +18,8 @@ import se.plushogskolan.casemanagement.service.CaseService;
 import se.plushogskolan.restcaseservice.exception.ConflictException;
 import se.plushogskolan.restcaseservice.exception.WebInternalErrorException;
 import se.plushogskolan.restcaseservice.model.DTOUser;
-import static se.plushogskolan.restcaseservice.model.DTOUser.*;
+import static se.plushogskolan.restcaseservice.model.DTOUser.toEntity;
+import static se.plushogskolan.restcaseservice.model.DTOUser.toDTO;
 
 @Component
 public class UserService {
@@ -122,10 +123,10 @@ public class UserService {
 		}
 	}
 	
-	public User addUserToTeam(Long userId, Long teamId){
+	public DTOUser addUserToTeam(Long userId, Long teamId){
 		
 		try{
-			return service.addUserToTeam(userId, teamId);
+			return toDTO(service.addUserToTeam(userId, teamId));
 		}catch (NoSpaceException e1) {
 			throw new ConflictException(e1.getMessage());
 		}catch (InternalErrorException e2) {

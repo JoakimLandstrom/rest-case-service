@@ -104,8 +104,8 @@ public final class TeamResource {
 
 	@PUT
 	@Path("{id}/users")
-	public Response addUserToTeam(DTOUser dtoUser, @PathParam("id") Long teamId) {
-		userService.addUserToTeam(dtoUser.getId(), teamId);
+	public Response addUserToTeam(Long userId, @PathParam("id") Long teamId) {
+		userService.addUserToTeam(userId, teamId);
 		return Response.status(Status.NO_CONTENT).build();
 	}
 

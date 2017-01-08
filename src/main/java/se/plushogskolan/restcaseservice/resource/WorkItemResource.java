@@ -33,78 +33,71 @@ import se.plushogskolan.restcaseservice.service.IssueService;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public final class WorkItemResource {
-	
+
 	@Context
 	private UriInfo uriInfo;
-	
+
 	@Autowired
 	private WorkItemService workItemService;
-	
+
 	@Autowired
 	private IssueService issueService;
-	
+
 	@POST
 	public Response saveWorkItem(DTOWorkItem dtoWorkItem) {
 		WorkItem workItem = workItemService.save(dtoWorkItem);
-		URI location = uriInfo.getAbsolutePathBuilder()
-				.path(workItem.getId().toString())
-				.build();
-		
+		URI location = uriInfo.getAbsolutePathBuilder().path(workItem.getId().toString()).build();
+
 		return Response.created(location).build();
 	}
-	
+
 	@POST
 	@Path("{id}/issues")
-	public Response saveIssue(String description, @PathParam("id") Long workItemId){
+	public Response saveIssue(String description, @PathParam("id") Long workItemId) {
 		Issue issue = issueService.save(description, workItemId);
-		
-		URI location = uriInfo.getAbsolutePathBuilder()
-				.path(issue.getId().toString())
-				.build();
-		
+
+		URI location = uriInfo.getAbsolutePathBuilder().path(issue.getId().toString()).build();
+
 		return Response.created(location).build();
 	}
-	
+
 	@PUT
 	@Path("{id}")
-	public Response updateStatus(@PathParam("id") Long id, @QueryParam("status") String status) {
-		WorkItem workItem = workItemService.updateStatusById(id, status);
-		URI location = uriInfo.getAbsolutePathBuilder()
-				.path(workItem.getId().toString())
-				.build();
+	public Response updateStatus(@PathParam("id") Long id, String status) {
+		workItemService.updateStatusById(id, status);
 
-		return Response.status(Status.NO_CONTENT).header("Location", location).build();
+		return Response.status(Status.NO_CONTENT).build();
 	}
-	
+
 	@DELETE
 	@Path("{id}")
 	public Response deleteWorkItem(@PathParam("id") Long id) {
 		workItemService.deleteWorkItem(id);
 		return Response.status(Status.NO_CONTENT).build();
 	}
-	
+
 	@GET
 	@Path("{id}")
 	public Response getWorkItem(@PathParam("id") Long id) {
 		DTOWorkItem dtoWorkItem = workItemService.getDTOWorkItemById(id);
 		return Response.ok(dtoWorkItem).build();
 	}
-	
+
 	@GET
 	public Response getWorkItems(@BeanParam WorkItemRequestBean request, @BeanParam PageRequestBean pageRequest) {
 		List<WorkItem> list = null;
 		int page = pageRequest.getPage();
 		int size = pageRequest.getSize();
-		
-		if(request.getStatus() != null)
+
+		if (request.getStatus() != null)
 			list = workItemService.getWorkItemsByStatus(request.getStatus(), page, size);
-		else if(request.getDescription() != null)
+		else if (request.getDescription() != null)
 			list = workItemService.searchWorkItemByDescription(request.getDescription(), page, size);
-		else if(request.isWithIssue())
+		else if (request.isWithIssue())
 			list = workItemService.getWorkItemsWithIssue(page, size);
 		else
 			list = workItemService.getAllWorkItems(page, size);
-		
+
 		return Response.ok(list).build();
 	}
 

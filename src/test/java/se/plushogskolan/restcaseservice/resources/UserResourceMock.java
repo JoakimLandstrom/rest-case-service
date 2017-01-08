@@ -49,7 +49,7 @@ public class UserResourceMock {
 
 	@MockBean
 	private CaseService caseService;
-
+	
 	@LocalServerPort
 	private int randomPort;
 
@@ -73,7 +73,7 @@ public class UserResourceMock {
 		webTarget = client.target(targetUrl);
 
 	}
-
+	
 	@Test
 	public void saveUserThrowsConflict() {
 
@@ -222,7 +222,7 @@ public class UserResourceMock {
 
 		when(caseService.getUser(1l)).thenReturn(toEntity(user));
 
-		Response response = client.target(targetUrl).path("1").request().header(header, token).get();
+		Response response = webTarget.path("1").request().header(header, token).get();
 
 		DTOUser resultUser = response.readEntity(DTOUser.class);
 
