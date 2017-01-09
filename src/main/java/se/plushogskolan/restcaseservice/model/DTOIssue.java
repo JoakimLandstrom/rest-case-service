@@ -13,6 +13,11 @@ public final class DTOIssue extends AbstractDTO{
 		this.dtoWorkItem = dtoWorkItem;
 	}
 	
+	private DTOIssue(){
+		super(null);
+		this.description = null;
+	}
+	
 	public String getDescription() {
 		return description;
 	}
